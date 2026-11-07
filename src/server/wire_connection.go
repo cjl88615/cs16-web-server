@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"sync"
+	"sync/atomic"
 )
 
 // Verify the entire synthetic address so a recycled slot cannot receive stale traffic.
@@ -48,4 +49,29 @@ func readGamePackets(reader io.Reader, accept func([]byte)) {
 			return
 		}
 	}
+}
+
+ // sessionLimiter bounds the number of expensive WebRTC peers, independent
+ // of the fixed game packet slot table. Acquire is safe under concurrent joins.
+type sessionLimiter struct {
+	active atomic.Int32
+}
+
+func (l *sessionLimiter) acquire(maxPlayers int) bool {
+	if maxPlayers < 1 {
+		return false
+	}
+	for {
+		current := l.active.Load()
+		if current >= int32(maxPlayers) {
+			return false
+		}
+		if l.active.CompareAndSwap(current, current+1) {
+			return true
+		}
+	}
+}
+
+func (l *sessionLimiter) release() {
+	l.active.Add(-1)
 }

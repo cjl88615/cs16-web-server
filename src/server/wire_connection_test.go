@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"io"
+	"sync"
+	"sync/atomic"
 	"testing"
 )
 
@@ -74,4 +76,46 @@ func (r *dataAndEOFReader) Read(buffer []byte) (int, error) {
 	}
 	r.read = true
 	return copy(buffer, "last"), io.EOF
+}
+
+func TestSessionLimiterRejectsExtraPeersAndReleasesCapacity(t *testing.T) {
+	const maxPlayers = 8
+	var limiter sessionLimiter
+	const attempts = 80
+	var accepted atomic.Int32
+	var evaluated sync.WaitGroup
+	var finished sync.WaitGroup
+	release := make(chan struct{})
+	start := make(chan struct{})
+	evaluated.Add(attempts)
+	finished.Add(attempts)
+	for i := 0; i < attempts; i++ {
+		go func() {
+			defer finished.Done()
+			<-start
+			ok := limiter.acquire(maxPlayers)
+			if ok {
+				accepted.Add(1)
+			}
+			evaluated.Done()
+			if ok {
+				<-release
+				limiter.release()
+			}
+		}()
+	}
+	close(start)
+	evaluated.Wait()
+	if got := accepted.Load(); got != maxPlayers {
+		t.Errorf("accepted %d concurrent sessions, want %d", got, maxPlayers)
+	}
+	close(release)
+	finished.Wait()
+	if got := limiter.active.Load(); got != 0 {
+		t.Fatalf("capacity leaked: %d sessions active", got)
+	}
+	if !limiter.acquire(maxPlayers) {
+		t.Fatal("session capacity not restored after disconnect")
+	}
+	limiter.release()
 }

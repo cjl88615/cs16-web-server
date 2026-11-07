@@ -20,7 +20,9 @@ import (
 	"time"
 )
 
-var connections = NewFixedArray[*gameConnection](128)
+// The game server allows at most 32 players; do not allocate 128 slots.
+var connections = NewFixedArray[*gameConnection](32)
+var sessions sessionLimiter
 var packets = make(chan *goxash3d_fwgs.Packet, 256)
 var enginePulse atomic.Int64
 var (
@@ -149,6 +151,12 @@ func ReadLoop(reader io.Reader, ip [4]byte) {
 	})
 }
 func websocketHandler(w http.ResponseWriter, r *http.Request) {
+	// Bound Pion peers BEFORE allocating sockets/ICE state on a 2 GiB VM.
+	if !sessions.acquire(gameConfig.MaxPlayers) {
+		http.Error(w, "server full", http.StatusServiceUnavailable)
+		return
+	}
+	defer sessions.release()
 	socket, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Errorf("Websocket upgrade: %v", err)
