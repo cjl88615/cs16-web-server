@@ -93,39 +93,57 @@ export class Xash3DWebRTC extends Xash3D {
     );
   }
 
-  async connect() {
-    return new Promise((resolve) => {
-      this.resolve = resolve;
+  async connect(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let settled = false;
+      const timer = setTimeout(() => {
+        this.ws?.close();
+        finish(new Error('WebRTC connection timed out'));
+      }, 25000);
+      const finish = (error?: Error): void => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        this.resolve = undefined;
+        if (error) reject(error); else resolve();
+      };
+      this.resolve = () => finish();
+
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-      const host = window.location.host;
-      this.ws = new WebSocket(`${protocol}://${host}/websocket`);
-      const handler = async (e: MessageEvent) => {
-        const parsed = JSON.parse(e.data);
-        switch (parsed.event) {
-          case 'offer':
-            await this.peer!.setRemoteDescription(parsed.data);
-            const answer = await this.peer!.createAnswer();
-            await this.peer!.setLocalDescription(answer);
-            this.wsSend('answer', answer);
-            if (!this.wasRemote) {
-              this.wasRemote = true;
-              this.candidates.forEach((c) => this.peer!.addIceCandidate(c));
-              this.candidates = [];
+      const ws = new WebSocket(protocol + '://' + window.location.host + '/websocket');
+      this.ws = ws;
+      ws.onopen = () => this.initConnection();
+      ws.onerror = () => finish(new Error('Unable to open WebSocket signalling'));
+      ws.onclose = () => finish(new Error('WebSocket signalling closed'));
+      ws.addEventListener('message', async (event: MessageEvent) => {
+        try {
+          const parsed = JSON.parse(event.data);
+          switch (parsed.event) {
+            case 'offer': {
+              if (!this.peer) throw new Error('Peer connection missing');
+              await this.peer.setRemoteDescription(parsed.data);
+              const answer = await this.peer.createAnswer();
+              await this.peer.setLocalDescription(answer);
+              this.wsSend('answer', answer);
+              if (!this.wasRemote) {
+                this.wasRemote = true;
+                for (const candidate of this.candidates) {
+                  await this.peer.addIceCandidate(candidate);
+                }
+                this.candidates = [];
+              }
+              break;
             }
-            break;
-          case 'candidate':
-            if (this.wasRemote) {
-              await this.peer!.addIceCandidate(parsed.data);
-            } else {
-              this.candidates.push(parsed.data);
-            }
-            break;
+            case 'candidate':
+              if (this.wasRemote) await this.peer?.addIceCandidate(parsed.data);
+              else this.candidates.push(parsed.data);
+              break;
+          }
+        } catch (error) {
+          console.error('WebRTC signalling failed:', error);
+          finish(new Error('WebRTC signalling error'));
         }
-      };
-      this.ws!.onopen = () => {
-        this.initConnection();
-      };
-      this.ws.addEventListener('message', handler);
+      });
     });
   }
 

@@ -3,7 +3,7 @@ type Language = 'zh' | 'en';
 const messages = {
   zh: {
     localNetwork: '局域网专用',
-    heroTitle: '经典战场，即刻集结',
+    heroTitle: '经典战场\n即刻集结',
     heroDescription: '无需安装客户端。打开浏览器，与同事一起进入 CS 1.6 对战。',
     featureMultiplayer: '局域网联机',
     featureBot: '智能 BOT 补位',
@@ -31,7 +31,7 @@ const messages = {
   },
   en: {
     localNetwork: 'LOCAL NETWORK',
-    heroTitle: 'CLASSIC BATTLE. READY TO PLAY.',
+    heroTitle: 'CLASSIC BATTLE.\nREADY TO PLAY.',
     heroDescription: 'No game installation needed. Join your teammates in a CS 1.6 match right from your browser.',
     featureMultiplayer: 'LAN multiplayer',
     featureBot: 'AI bot fill',
@@ -77,12 +77,7 @@ function applyLanguage(): void {
   for (const element of document.querySelectorAll<HTMLElement>('[data-i18n]')) {
     const key = element.dataset.i18n as MessageKey;
     if (key && key in messages.zh) {
-      // Keep the hero title as two lines in Chinese, but avoid unsafe HTML injection.
-      if (key === 'heroTitle') {
-        element.textContent = t(key);
-      } else {
-        element.textContent = t(key);
-      }
+      element.textContent = t(key);
     }
   }
   for (const element of document.querySelectorAll<HTMLInputElement>('[data-i18n-placeholder]')) {
