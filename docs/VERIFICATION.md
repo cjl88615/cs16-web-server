@@ -29,3 +29,4 @@
 - 已提交：原生 Go/C 编译串行化、Node 构建堆上限 768 MB、BuildKit 单并发脚本。
 - 静态检查要求：`Source checks` 必须通过 Go race tests、TypeScript、Vite、Compose 配置与 shell 语法；结果以新的 CI 运行记录为准。
 - **尚未验收**：新专用 2 核 2GB VM 上 Docker 完整构建、BOT 走位与射击、多人同局、30 分钟稳定性、延迟与内存上限。绝不把配置优化宣称为已经在目标机器流畅运行。
+- 已提交：WebRTC 并发连接限额与并发释放测试，阻止超过 MAX_PLAYERS 的浏览器会话提前分配大量 ICE/UDP 状态。

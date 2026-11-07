@@ -36,3 +36,5 @@
 网络读缓冲复用要确保排队数据持有**独立 payload 切片**，绝不能把下次 Read 会覆盖的原始 8 KiB 缓冲丢进 channel。原生 recvfrom 空闲轮询使用共享 ticker，保持固定最多 10ms 等待和优先读到现成包。禁止为了跑分而禁用 WebRTC Origin 检查或降低引擎游戏模拟到明显影响射击手感。
 
 首次构建可在 2GB VM 上使用 `sh scripts/build-2gb.sh` 顺序编译，构建内存和正式运行内存严格分开验收。后续如需继续优化，先做真实 CPU/内存/机器人性能观测，不依据 Go 基准推断整场游戏性能。
+
+WebSocket 升级前用 `sessionLimiter` 原子限制在 MAX_PLAYERS 并发；即使未正式入队游戏的浏览器标签页也占用网络会话名额。这是保护 2GB VM 的有意限制，不要改回允许 128 条 Pion 会话的旧实现。连接退出时必须 release。
