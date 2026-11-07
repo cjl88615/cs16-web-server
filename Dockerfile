@@ -42,7 +42,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 WORKDIR /bots
 RUN curl -fSL --retry 3 https://github.com/yapb/yapb/releases/download/4.4.957/yapb-4.4.957-linux.tar.xz -o yapb.tar.xz \
     && echo '8c095ac89b9b2ccc70a66a71d608e1a570b5268c57c6083ced8c06161533a4b1  yapb.tar.xz' | sha256sum -c - \
-    && tar -xJf yapb.tar.xz && rm yapb.tar.xz
+    && tar -xJf yapb.tar.xz && rm yapb.tar.xz \
+    && find addons -type d -exec chmod 0755 {} +
+# The upstream archive includes non-traversable data/train and data/logs directories.
+# Normalize them before copying to the non-root runtime, so BOT caches can be saved.
 
 FROM node:24-bookworm-slim AS client
 WORKDIR /client
