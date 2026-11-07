@@ -1,69 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <title>Counter-Strike 1.6</title>
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <div
-      id="desktop"
-      class="flex-row align-center justify-center use-preferred-font"
-    >
-      <div class="window active">
-        <div class="title-bar">
-          <div class="title-bar-buttons">
-            <img
-              alt="Counter-Strike 1.6 icon"
-              src="/apple-touch-icon.png"
-              width="19"
-              height="19"
-            />
-          </div>
-          <div class="title-bar-text">Counter-Strike 1.6</div>
-          <div class="title-bar-buttons">
-            <button data-minimize=""></button>
-            <button data-maximize=""></button>
-            <button data-close=""></button>
-          </div>
-        </div>
-        <div class="window-body">
-          <img
-            class="banner-image margin-bottom"
-            alt="Counter-Strike 1.6 banner"
-            src="/cs16-banner.jpg"
-          />
-          <div class="flex-row padding-horizontal">
-            <progress
-              id="progress-bar"
-              class="grow"
-              value="0"
-              max="100"
-            ></progress>
-          </div>
-          <div id="loading-status" class="flex-row padding margin-bottom">
-            Loading...
-          </div>
-          <div
-            class="flex-row gap padding margin-vertical align-center flex-grow"
-          >
-            <label for="player-name-input">Your player name:</label>
-            <input id="player-name-input" class="grow" type="text" autofocus />
-          </div>
-          <hr />
-          <div class="flex-row gap padding margin-vertical justify-end">
-            <button id="play-button" disabled>Play</button>
-            <button>Quit</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <canvas id="canvas"></canvas>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
-</html>
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="theme-color" content="#131819"/><title>塔岛 CS 1.6</title><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/src/style.css"/></head>
+<body>
+<canvas id="canvas" tabindex="0" aria-label="Counter-Strike 1.6" hidden></canvas>
+<main id="desktop">
+ <header class="topbar"><div class="brand"><span class="brand-mark" aria-hidden="true">CS<span>16</span></span><div><h1 data-i18n="title"></h1><p data-i18n="lan"></p></div></div><span class="version">2026.11.07-r1</span></header>
+ <div class="workspace">
+  <section class="brief" aria-labelledby="lobby-title">
+   <div class="section-heading"><h2 id="lobby-title" data-i18n="lobby"></h2><span id="server-status" role="status" data-i18n="connecting"></span></div>
+   <div class="map-panel"><div class="map-label" data-i18n="map"></div><strong id="server-map">--</strong><div class="map-line" aria-hidden="true"></div><span class="map-sub">COUNTER-STRIKE / CLASSIC</span></div>
+   <dl class="server-specs"><div><dt data-i18n="quota"></dt><dd id="bot-quota">--</dd></div><div><dt data-i18n="difficulty"></dt><dd id="bot-difficulty">--</dd></div><div><dt data-i18n="capacity"></dt><dd id="max-players">--</dd></div></dl>
+   <div class="bot-brief"><span class="bot-symbol" aria-hidden="true">+</span><div><h3 data-i18n="botTitle"></h3><p data-i18n="botText"></p><p class="muted" data-i18n="botNote"></p></div></div>
+   <section class="controls"><h3 data-i18n="help"></h3><dl><div><dt><kbd>W A S D</kbd></dt><dd data-i18n="move"></dd></div><div><dt data-i18n="mouse"></dt><dd data-i18n="aim"></dd></div><div><dt><kbd>R</kbd></dt><dd data-i18n="reload"></dd></div><div><dt><kbd>Space</kbd></dt><dd data-i18n="jump"></dd></div><div><dt><kbd>Ctrl</kbd></dt><dd data-i18n="crouch"></dd></div><div><dt><kbd>Tab</kbd></dt><dd data-i18n="score"></dd></div><div><dt><kbd>Esc</kbd></dt><dd data-i18n="release"></dd></div><div><dt><kbd>F2</kbd></dt><dd data-i18n="menu"></dd></div></dl></section>
+  </section>
+  <section class="join-panel" aria-labelledby="join-title"><div class="join-heading"><span aria-hidden="true">▶</span><h2 id="join-title" data-i18n="join"></h2></div>
+   <form id="join-form"><label for="player-name-input" data-i18n="name"></label><input id="player-name-input" name="playerName" autocomplete="nickname" maxlength="31" required aria-describedby="name-hint"/><p id="name-hint" class="field-hint" data-i18n="nameHint"></p>
+   <label class="volume-label" for="volume-input"><span data-i18n="volume"></span><output id="volume-value">70%</output></label><input type="range" id="volume-input" min="0" max="100" value="70"/>
+   <button id="play-button" class="primary" type="submit" data-i18n="load"></button></form>
+   <div class="loading-box"><p id="loading-status" role="status" aria-live="polite" data-i18n="initial"></p><progress id="progress-bar" value="0" max="100" data-i18n-label="progress"></progress></div>
+   <p id="error-status" class="error" role="alert" hidden></p><p id="storage-notice" class="field-hint" hidden></p>
+   <button id="cache-button" class="text-button" type="button" data-i18n="cacheClear"></button>
+   <p class="device-note" data-i18n="desktopNote"></p>
+  </section>
+ </div>
+ <footer><span>CS 1.6 / LAN EDITION</span><span data-i18n="nativeNote"></span></footer>
+</main>
+<button id="menu-toggle" type="button" hidden><kbd>F2</kbd> <span data-i18n="menu"></span></button>
+<dialog id="game-menu"><div class="dialog-heading"><h2 data-i18n="menu"></h2><button id="menu-close" type="button" data-i18n="return"></button></div><h3 data-i18n="team"></h3><div class="button-grid"><button data-game="ct" data-i18n="ct"></button><button data-game="t" data-i18n="t"></button><button data-game="auto" data-i18n="auto"></button></div><h3 data-i18n="buy"></h3><div class="button-grid buys"><button data-game="ak47">AK-47</button><button data-game="m4a1">M4A1</button><button data-game="awp">AWP</button><button data-game="deagle">Desert Eagle</button><button data-game="armor" data-i18n="armor"></button><button data-game="ammo" data-i18n="ammo"></button><button data-game="defuse" data-i18n="defuse"></button><button data-game="grenade" data-i18n="grenade"></button><button data-game="flash" data-i18n="flash"></button></div><p class="field-hint" data-i18n="buyNote"></p><p id="command-status" role="status"></p><button id="fullscreen-button" type="button" data-i18n="fullscreen"></button></dialog>
+<script type="module" src="/src/main.ts"></script></body></html>
