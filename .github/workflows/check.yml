@@ -1,0 +1,34 @@
+name: Source checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-fund
+      - run: npm run test:unit
+      - run: npm run build
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+      - name: Pure Go policy and configuration tests
+        run: >-
+          go test -race
+          src/server/config.go src/server/config_test.go
+          src/server/http_policy.go src/server/http_policy_test.go
+          src/server/wire_connection.go src/server/wire_connection_test.go
+      - name: Compose schema
+        run: LAN_IP=192.168.2.80 docker compose config --quiet

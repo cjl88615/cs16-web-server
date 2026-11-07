@@ -1,1 +1,10 @@
-node_modules
+.git
+**/node_modules
+**/dist
+.test-build
+.env
+*.log
+*.zip
+*.tar.gz
+*.tar.xz
+docs
