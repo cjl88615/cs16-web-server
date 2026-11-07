@@ -1,0 +1,17 @@
+export const zh = {
+  title: '塔岛 CS 1.6', lan: '局域网对战', lobby: '对战大厅', connecting: '正在检查服务器',
+  online: '网页服务在线', offline: '服务器暂不可达', map: '开局地图', quota: '补位目标', difficulty: 'BOT 难度',
+  join: '加入对战', name: '游戏昵称', nameHint: '昵称最多 31 个 UTF-8 字节（约 10 个汉字）。', volume: '游戏音量',
+  load: '加载游戏', enter: '进入对战', loading: '正在准备', ready: '准备就绪，点击“进入对战”。',
+  initial: '首次加载需下载游戏资源，后续优先使用本机缓存。', cacheClear: '清除游戏缓存', cacheCleared: '游戏缓存已清除。',
+  cacheUnavailable: '本机缓存不可用，仍可继续游戏。', cached: '正在读取本机缓存', download: '正在下载游戏资源', unpack: '正在解压游戏资源',
+  engine: '正在启动游戏引擎', network: '正在连接对战服务器', failed: '加载失败', retry: '重新加载',
+  invalidName: '请填写昵称，不要使用引号、分号或换行。', timeout: '联机超时：请检查服务器 LAN_IP 与 WebRTC UDP 端口（默认 27018）。',
+  disconnected: '联机已中断，请重新加载后加入。', unsupported: '当前浏览器不支持 WebAssembly 或 WebRTC，请使用桌面版 Edge / Chrome。',
+  help: '操作指南', move: '移动', aim: '瞄准 / 射击', mouse: '鼠标 / 左键', reload: '换弹', jump: '跳跃', crouch: '蹲下', score: '战绩', release: '释放鼠标',
+  menu: '中文快捷菜单', botTitle: '人不齐，也能开局', botText: 'BOT 按目标人数自动补位；真人加入后逐步让位。', botNote: '人数与难度由管理员统一设置。',
+  capacity: '房间上限', people: '人', unknown: '未获取', desktopNote: '推荐电脑、键盘和鼠标。手机触控体验需单独验证。',
+  return: '返回游戏', team: '选择队伍', ct: '反恐精英', t: '恐怖分子', auto: '自动分配', buy: '快捷购买',
+  buyNote: '需在购买区、购买时间内且金钱足够；枪械仍受队伍限制。', armor: '防弹衣 + 头盔', ammo: '主武器弹药', defuse: '拆弹器', grenade: '手雷', flash: '闪光弹',
+  sent: '指令已发送，以游戏内结果为准。', fullscreen: '全屏', nativeNote: '游戏内原生提示仍可能显示英文。', progress: '加载进度',
+} as const;

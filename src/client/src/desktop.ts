@@ -1,18 +1,19 @@
-const loadingStatus = document.getElementById('loading-status')!;
-const progressBar = document.getElementById(
-  'progress-bar'
-)! as HTMLProgressElement;
-const desktop = document.getElementById('desktop')!;
-
 export function updateStatus(message: string): void {
-  loadingStatus.innerText = message;
+  document.getElementById('loading-status')!.textContent = message;
 }
-
 export function updateProgress(value: number, max: number): void {
-  progressBar.max = max;
-  progressBar.value = value;
+  const bar = document.getElementById('progress-bar') as HTMLProgressElement;
+  if (!(max > 0)) { bar.removeAttribute('value'); return; }
+  bar.max = max;
+  bar.value = Math.max(0, Math.min(max, value));
 }
-
+export function storageNotice(message: string): void {
+  const el = document.getElementById('storage-notice')!;
+  el.textContent = message;
+  el.hidden = false;
+}
 export function removeDesktop(): void {
-  desktop.remove();
+  document.getElementById('desktop')!.hidden = true;
+  document.getElementById('canvas')!.hidden = false;
+  document.getElementById('menu-toggle')!.hidden = false;
 }
