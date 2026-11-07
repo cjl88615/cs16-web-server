@@ -1,15 +1,28 @@
----
 services:
   cs16-web-server:
     build: .
+    platform: linux/amd64
+    image: cs16-web-server:2026.11.07-r1
     container_name: cs16-web-server
-    command: ["+map de_dust2", "+maxplayers 14"]
-    restart: always
-    platform: linux/386
+    restart: unless-stopped
+    init: true
     environment:
-      IP: 127.0.0.1
-      PORT: 27018
+      LAN_IP: ${LAN_IP:?Set LAN_IP in .env to the VM LAN address}
+      PORT: ${PORT:-27018}
+      SERVER_NAME: ${SERVER_NAME:-Taliabu CS 1.6}
+      START_MAP: ${START_MAP:-de_dust2}
+      MAX_PLAYERS: ${MAX_PLAYERS:-16}
+      BOT_QUOTA: ${BOT_QUOTA:-8}
+      BOT_DIFFICULTY: ${BOT_DIFFICULTY:-2}
     ports:
-      - "27016:27016"
-      - "27018:27018/tcp"
-      - "27018:27018/udp"
+      - "${LAN_IP}:${WEB_PORT:-27016}:27016/tcp"
+      - "${LAN_IP}:${PORT:-27018}:${PORT:-27018}/udp"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    stop_grace_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
