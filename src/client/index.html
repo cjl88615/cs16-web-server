@@ -1,69 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <title>Counter-Strike 1.6</title>
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <div
-      id="desktop"
-      class="flex-row align-center justify-center use-preferred-font"
-    >
-      <div class="window active">
-        <div class="title-bar">
-          <div class="title-bar-buttons">
-            <img
-              alt="Counter-Strike 1.6 icon"
-              src="/apple-touch-icon.png"
-              width="19"
-              height="19"
-            />
-          </div>
-          <div class="title-bar-text">Counter-Strike 1.6</div>
-          <div class="title-bar-buttons">
-            <button data-minimize=""></button>
-            <button data-maximize=""></button>
-            <button data-close=""></button>
-          </div>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1424" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <title>塔岛 CS 1.6 | 局域网对战</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="desktop">
+    <div class="ambient" aria-hidden="true"></div>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark">CS<span>16</span></span><span class="brand-divider"></span><span class="brand-label">TALIABU <strong>LAN ARENA</strong></span></div>
+        <div class="top-actions">
+          <span class="lan-badge"><span class="live-dot"></span><span data-i18n="localNetwork">局域网专用</span></span>
+          <div class="locale-switch" aria-label="Language"><button type="button" data-locale="zh" aria-pressed="true">中文</button><button type="button" data-locale="en" aria-pressed="false">EN</button></div>
         </div>
-        <div class="window-body">
-          <img
-            class="banner-image margin-bottom"
-            alt="Counter-Strike 1.6 banner"
-            src="/cs16-banner.jpg"
-          />
-          <div class="flex-row padding-horizontal">
-            <progress
-              id="progress-bar"
-              class="grow"
-              value="0"
-              max="100"
-            ></progress>
+      </header>
+
+      <main class="lobby">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span> COUNTER-STRIKE · 1.6</p>
+            <h1 data-i18n="heroTitle">经典战场<br />即刻集结</h1>
+            <p class="hero-desc" data-i18n="heroDescription">无需安装客户端。打开浏览器，与同事一起进入 CS 1.6 对战。</p>
+            <div class="feature-tags"><span data-i18n="featureMultiplayer">局域网联机</span><span data-i18n="featureBot">智能 BOT 补位</span><span data-i18n="featureDesktop">键鼠操作</span></div>
           </div>
-          <div id="loading-status" class="flex-row padding margin-bottom">
-            Loading...
+          <div class="hero-art"><img src="/cs16-banner.jpg" alt="Counter-Strike 1.6" /><div class="hero-art-caption">TACTICAL · MULTIPLAYER · LAN</div></div>
+        </section>
+
+        <section class="bottom-grid">
+          <div class="panel join-panel">
+            <div class="section-head"><span class="section-index">01 / JOIN GAME</span><span class="section-pill" data-i18n="quickStart">快速开始</span></div>
+            <h2 data-i18n="enterBattle">进入战局</h2>
+            <label for="player-name-input" data-i18n="nameLabel">您的游戏昵称</label>
+            <input id="player-name-input" type="text" maxlength="24" autocomplete="nickname" placeholder="输入昵称" data-i18n-placeholder="namePlaceholder" />
+            <div class="download-heading"><span data-i18n="preparingResources">游戏资源</span><span id="progress-percent" aria-live="off">0%</span></div>
+            <progress id="progress-bar" value="0" max="100" aria-label="资源加载进度"></progress>
+            <div id="loading-status" class="loading-status" role="status" aria-live="polite">正在初始化…</div>
+            <button id="play-button" class="play-button" type="button" disabled><span data-i18n="play">进入游戏</span><span aria-hidden="true">↗</span></button>
           </div>
-          <div
-            class="flex-row gap padding margin-vertical align-center flex-grow"
-          >
-            <label for="player-name-input">Your player name:</label>
-            <input id="player-name-input" class="grow" type="text" autofocus />
-          </div>
-          <hr />
-          <div class="flex-row gap padding margin-vertical justify-end">
-            <button id="play-button" disabled>Play</button>
-            <button>Quit</button>
-          </div>
-        </div>
-      </div>
+          <aside class="panel guide-panel">
+            <div class="section-head"><span class="section-index">02 / HOW TO PLAY</span></div>
+            <h2 data-i18n="howTo">游戏说明</h2>
+            <div class="guide-row"><span class="guide-number">01</span><p data-i18n="guideOne">首次进入需要下载游戏资源，之后会尝试从浏览器缓存读取。</p></div>
+            <div class="guide-row"><span class="guide-number">02</span><p data-i18n="guideTwo">同一局域网的同事打开相同地址，输入各自昵称即可加入。</p></div>
+            <div class="guide-row"><span class="guide-number">03</span><p data-i18n="guideThree">BOT 由游戏服务器配置；无人在线时也可以独自对战。</p></div>
+            <div class="guide-note"><strong data-i18n="desktopNotice">推荐使用电脑</strong><span data-i18n="desktopExplain">Chrome / Edge 浏览器，键盘与鼠标操作。</span></div>
+          </aside>
+        </section>
+      </main>
+      <footer class="footer"><span>CS 1.6 · TALIABU LAN</span><span data-i18n="footer">仅供内部局域网娱乐</span></footer>
     </div>
-    <canvas id="canvas"></canvas>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+  </div>
+  <canvas id="canvas" aria-label="Counter-Strike game"></canvas>
+  <script type="module" src="/src/main.ts"></script>
+</body>
 </html>
