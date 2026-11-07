@@ -6,7 +6,7 @@ The original MIT license in LICENSE is retained. It applies to this application'
 | --- | --- |
 | Original application | https://github.com/balintsoos/cs16-web-server |
 | Native Xash3D Go-compatible engine | https://github.com/jklenner/xash3d-fwgs/tree/6ada1658348f7c2f17f2d9ead0473e6c54940605 |
-| Original Go-wrapper revision, preserved fork | https://github.com/jklenner/goxash3d-fwgs/tree/90b4aa816099db3c45cfa01dd8246f12473bce22 |
+| Original Go-wrapper revision, preserved fork | https://github.com/jklenner/goxash3d-fwgs/tree/90b4aa8160991b4ecb4582ba79abcce1900c3632 |
 | Browser engine | xash3d-fwgs 1.0.0, pinned by package-lock.json |
 | Browser CS client | cs16-client 0.0.2, exact original npm integrity retained |
 | Bots and navigation graphs | https://github.com/yapb/yapb/releases/tag/4.4.957 |
@@ -27,5 +27,7 @@ YaPB archive SHA-256:
 Do not replace the preserved native engine with its fork's current HEAD: the newer Go/network ABI is different. Check each component's own license and notices when distributing modified binaries. Xash3D and other dependencies can have requirements beyond this application's MIT license.
 
 Valve models, textures, sounds and maps are not included in this Git repository. Download availability through SteamCMD does not itself grant unrestricted redistribution rights. Do not publish game-containing Docker images, resource ZIPs, or custom maps unless the relevant redistribution rights are established. Keep a legitimate game license where required. Private LAN deployment and public redistribution are different questions.
+
+SteamCMD downloads the currently available app 90 content during a fresh build. The running container does not automatically update it. Therefore fixed engine/package versions do not by themselves guarantee bit-for-bit reproducible Valve assets; record the deployed image ID and repeat gameplay checks when rebuilding.
 
 `fy_iceworld` is NOT promised as a bundled map. A custom map needs its authorized BSP/resources, a matching YaPB navigation graph, and an updated browser asset ZIP/manifest.
