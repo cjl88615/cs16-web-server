@@ -29,3 +29,23 @@ func (c *gameConnection) write(ip [4]byte, packet []byte) {
 	}
 }
 func (c *gameConnection) close() { c.mu.Lock(); defer c.mu.Unlock(); c.closed = true; c.writer = nil }
+
+const gamePacketBufferSize = 8 * 1024
+
+// readGamePackets reuses one input buffer for the life of a WebRTC connection.
+// Only the received payload is copied because packets remain queued after
+// the next read; retaining the full 8 KiB buffer per packet wastes memory.
+func readGamePackets(reader io.Reader, accept func([]byte)) {
+	buffer := make([]byte, gamePacketBufferSize)
+	for {
+		n, err := reader.Read(buffer)
+		if n > 0 {
+			payload := make([]byte, n)
+			copy(payload, buffer[:n])
+			accept(payload)
+		}
+		if err != nil {
+			return
+		}
+	}
+}

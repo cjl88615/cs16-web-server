@@ -139,21 +139,14 @@ func dispatchKeyFrame() {
 	}
 }
 
-const messageSize = 8 * 1024
-
 func ReadLoop(reader io.Reader, ip [4]byte) {
-	for {
-		buffer := make([]byte, messageSize)
-		n, err := reader.Read(buffer)
-		if err != nil {
-			return
-		}
+	readGamePackets(reader, func(payload []byte) {
 		// Unreliable game traffic must not strand a reader when the queue is full.
 		select {
-		case packets <- &goxash3d_fwgs.Packet{IP: ip, Data: buffer[:n]}:
+		case packets <- &goxash3d_fwgs.Packet{IP: ip, Data: payload}:
 		default:
 		}
-	}
+	})
 }
 func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	socket, err := upgrader.Upgrade(w, r, nil)
@@ -412,6 +405,9 @@ func runSFU() {
 			dispatchKeyFrame()
 		}
 	}()
+	// A single reusable poll ticker avoids allocating a new timer for every
+	// empty native recvfrom call (up to ~100 calls/second while idle).
+	networkPoll := time.NewTicker(10 * time.Millisecond)
 	goxash3d_fwgs.DefaultXash3D.RegisterRecvfromCallback(func() *goxash3d_fwgs.Packet {
 		enginePulse.Store(time.Now().UnixNano())
 		select {
@@ -419,12 +415,10 @@ func runSFU() {
 			return packet
 		default:
 		}
-		timer := time.NewTimer(10 * time.Millisecond)
-		defer timer.Stop()
 		select {
 		case packet := <-packets:
 			return packet
-		case <-timer.C:
+		case <-networkPoll.C:
 			return nil
 		}
 	})
