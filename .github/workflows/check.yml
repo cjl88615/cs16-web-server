@@ -32,3 +32,5 @@ jobs:
           src/server/wire_connection.go src/server/wire_connection_test.go
       - name: Compose schema
         run: LAN_IP=192.168.2.80 docker compose config --quiet
+      - name: Low-memory build script syntax
+        run: sh -n scripts/build-2gb.sh

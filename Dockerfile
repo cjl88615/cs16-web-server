@@ -19,7 +19,7 @@ RUN git init && git remote add origin https://github.com/jklenner/xash3d-fwgs.gi
     && git fetch --depth 1 origin 6ada1658348f7c2f17f2d9ead0473e6c54940605 \
     && git checkout --detach FETCH_HEAD \
     && git submodule update --init --depth 1 3rdparty/libbacktrace/libbacktrace
-RUN ./waf configure -T release -d --32bits --enable-lto --enable-openmp && ./waf build -j2
+RUN ./waf configure -T release -d --32bits --enable-lto --enable-openmp && ./waf build -j1
 
 FROM golang:1.26.5-bookworm AS server
 RUN apt-get update && apt-get install -y --no-install-recommends gcc-multilib g++-multilib && rm -rf /var/lib/apt/lists/*
@@ -34,8 +34,8 @@ COPY --from=engine /xash/build/public/libbuild_vcs.a /build/goxash/pkg/libbuild_
 COPY --from=engine /xash/build/public/libpublic.a /build/goxash/pkg/libpublic.a
 COPY --from=engine /xash/build/3rdparty/libbacktrace/libbacktrace.a /build/goxash/pkg/libbacktrace.a
 COPY src/server src/server
-ENV GOARCH=386 CGO_ENABLED=1 CC="gcc -m32" CGO_CFLAGS="-fopenmp -m32" CGO_LDFLAGS="-fopenmp -m32"
-RUN go test ./src/server && go build -trimpath -o /build/xash ./src/server
+ENV GOARCH=386 CGO_ENABLED=1 CC="gcc -m32" CGO_CFLAGS="-fopenmp -m32" CGO_LDFLAGS="-fopenmp -m32" GOMAXPROCS=2
+RUN go test -p 1 ./src/server && go build -p 1 -trimpath -o /build/xash ./src/server
 
 FROM debian:bookworm-slim AS bots
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl xz-utils && rm -rf /var/lib/apt/lists/*
@@ -53,7 +53,7 @@ COPY package.json package-lock.json tsconfig.json vite.config.ts ./
 RUN npm ci --no-audit --no-fund
 COPY src/client src/client
 COPY tests tests
-RUN npm run test:unit && npm run build
+RUN NODE_OPTIONS=--max-old-space-size=768 npm run test:unit && NODE_OPTIONS=--max-old-space-size=768 npm run build
 
 FROM debian:bookworm-slim AS final
 ENV XASH3D_BASEDIR=/xashds LD_LIBRARY_PATH=/xashds
