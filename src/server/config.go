@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const releaseVersion = "2026.11.07-r1"
+const releaseVersion = "2026.11.07-r2"
 
 type GameConfig struct {
 	Version       string `json:"version"`
@@ -52,10 +52,10 @@ func loadGameConfig() (GameConfig, error) {
 		return cfg, fmt.Errorf("LAN_IP must be the real, non-loopback IPv4 address reachable by players")
 	}
 	var err error
-	if cfg.MaxPlayers, err = envInt("MAX_PLAYERS", 16, 2, 32); err != nil {
+	if cfg.MaxPlayers, err = envInt("MAX_PLAYERS", 8, 2, 32); err != nil {
 		return cfg, err
 	}
-	if cfg.BotQuota, err = envInt("BOT_QUOTA", 8, 0, cfg.MaxPlayers-1); err != nil {
+	if cfg.BotQuota, err = envInt("BOT_QUOTA", 5, 0, cfg.MaxPlayers-1); err != nil {
 		return cfg, err
 	}
 	if cfg.BotDifficulty, err = envInt("BOT_DIFFICULTY", 2, 0, 4); err != nil {
@@ -107,6 +107,9 @@ yb_graph_analyze_auto_start "0"
 yb_graph_url ""
 yb_graph_url_upload ""
 yb_chat "0"
+yb_shoots_thru_walls "1"
+yb_threadpool_workers "1"
+yb_spraypaints "0"
 `, releaseVersion, cfg.BotQuota, cfg.BotDifficulty)
 	if err := os.WriteFile(filepath.Join(game, "addons/yapb/conf/yapb.cfg"), []byte(bots), 0644); err != nil {
 		return err

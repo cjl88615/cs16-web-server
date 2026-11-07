@@ -2,7 +2,7 @@ services:
   cs16-web-server:
     build: .
     platform: linux/amd64
-    image: cs16-web-server:2026.11.07-r1
+    image: cs16-web-server:2026.11.07-r2
     container_name: cs16-web-server
     restart: unless-stopped
     init: true
@@ -11,9 +11,15 @@ services:
       PORT: ${PORT:-27018}
       SERVER_NAME: ${SERVER_NAME:-Taliabu CS 1.6}
       START_MAP: ${START_MAP:-de_dust2}
-      MAX_PLAYERS: ${MAX_PLAYERS:-16}
-      BOT_QUOTA: ${BOT_QUOTA:-8}
+      MAX_PLAYERS: ${MAX_PLAYERS:-8}
+      BOT_QUOTA: ${BOT_QUOTA:-5}
       BOT_DIFFICULTY: ${BOT_DIFFICULTY:-2}
+      GOMAXPROCS: "2"
+      GOMEMLIMIT: "384MiB"
+      MALLOC_ARENA_MAX: "2"
+    # Leave at least 512 MiB for the VM operating system and Docker.
+    mem_limit: 1536m
+    memswap_limit: 1536m
     ports:
       - "${LAN_IP}:${WEB_PORT:-27016}:27016/tcp"
       - "${LAN_IP}:${PORT:-27018}:${PORT:-27018}/udp"

@@ -15,8 +15,10 @@ func validEnv(t *testing.T) {
 }
 func TestDefaultConfiguration(t *testing.T) {
 	validEnv(t)
+	t.Setenv("MAX_PLAYERS", "")
+	t.Setenv("BOT_QUOTA", "")
 	cfg, err := loadGameConfig()
-	if err != nil || cfg.BotQuota != 8 || cfg.MaxPlayers != 16 || cfg.BotDifficulty != 2 {
+	if err != nil || cfg.BotQuota != 5 || cfg.MaxPlayers != 8 || cfg.BotDifficulty != 2 {
 		t.Fatalf("unexpected config: %+v, %v", cfg, err)
 	}
 }
@@ -58,7 +60,7 @@ func TestPrepareGame(t *testing.T) {
 		}
 	}
 	data, _ := os.ReadFile(filepath.Join(game, "addons/yapb/conf/yapb.cfg"))
-	if !strings.Contains(string(data), `yb_quota "8"`) || !strings.Contains(string(data), `yb_quota_mode "fill"`) {
+	if !strings.Contains(string(data), `yb_quota "8"`) || !strings.Contains(string(data), `yb_quota_mode "fill"`) || !strings.Contains(string(data), `yb_threadpool_workers "1"`) || !strings.Contains(string(data), `yb_shoots_thru_walls "1"`) {
 		t.Fatal(string(data))
 	}
 	os.Remove(filepath.Join(game, "addons/yapb/data/graph/de_dust2.graph"))
